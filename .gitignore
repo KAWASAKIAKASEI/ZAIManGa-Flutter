@@ -47,3 +47,4 @@ app.*.map.json
 /android/app/release
 
 /android/zai_key.properties
+错误日志.txt

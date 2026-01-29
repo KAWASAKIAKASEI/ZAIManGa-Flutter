@@ -4,7 +4,7 @@
 <p align="center">
     <img width="128" src="/document/logo.png" alt="DMZJX logo">
 </p>
-<h2 align="center">ZAI-X</h2>
+<h2 align="center">再漫画Flutter</h2>
 
 <p align="center">
 使用Flutter编写的再漫画跨平台第三方客户端

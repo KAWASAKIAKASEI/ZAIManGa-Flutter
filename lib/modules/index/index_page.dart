@@ -30,40 +30,31 @@ class IndexPage extends GetView<IndexController> {
         Obx(
           () => Scaffold(
             body: indexStack,
-            bottomNavigationBar: Theme(
-              data: Theme.of(context).copyWith(
-                splashColor: Colors.transparent,
-              ),
-              child: BottomNavigationBar(
-                currentIndex: controller.index.value,
-                onTap: controller.setIndex,
-                type: BottomNavigationBarType.fixed,
-                showSelectedLabels: false,
-                showUnselectedLabels: false,
-                backgroundColor: Theme.of(context).cardColor,
-                items: const [
-                  BottomNavigationBarItem(
-                    icon: Icon(Remix.bear_smile_line),
-                    activeIcon: Icon(Remix.bear_smile_fill),
-                    label: "漫画",
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Remix.article_line),
-                    activeIcon: Icon(Remix.article_fill),
-                    label: "资讯",
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Remix.book_open_line),
-                    activeIcon: Icon(Remix.book_open_fill),
-                    label: "轻小说",
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Remix.user_smile_line),
-                    activeIcon: Icon(Remix.user_smile_fill),
-                    label: "我的",
-                  ),
-                ],
-              ),
+            bottomNavigationBar: NavigationBar(
+              selectedIndex: controller.index.value,
+              onDestinationSelected: controller.setIndex,
+              destinations: const [
+                NavigationDestination(
+                  icon: Icon(Remix.bear_smile_line),
+                  selectedIcon: Icon(Remix.bear_smile_fill),
+                  label: "漫画",
+                ),
+                NavigationDestination(
+                  icon: Icon(Remix.article_line),
+                  selectedIcon: Icon(Remix.article_fill),
+                  label: "资讯",
+                ),
+                NavigationDestination(
+                  icon: Icon(Remix.book_open_line),
+                  selectedIcon: Icon(Remix.book_open_fill),
+                  label: "轻小说",
+                ),
+                NavigationDestination(
+                  icon: Icon(Remix.user_smile_line),
+                  selectedIcon: Icon(Remix.user_smile_fill),
+                  label: "我的",
+                ),
+              ],
             ),
           ),
         ),

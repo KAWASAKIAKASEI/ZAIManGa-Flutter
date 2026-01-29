@@ -1,4 +1,4 @@
-display_name: ZAI-X
+display_name: 再漫画Flutter
 package_name: dmzjx
 maintainer:
   name: xiaoyaocz
@@ -13,7 +13,7 @@ keywords:
   - 动漫之家
   - DMZJ
 
-generic_name: ZAI-X
+generic_name: 再漫画Flutter
 
 categories:
   - Media

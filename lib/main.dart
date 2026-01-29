@@ -27,6 +27,7 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:windows_single_instance/windows_single_instance.dart';
+import 'package:dynamic_color/dynamic_color.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -92,37 +93,41 @@ class DMZJApp extends StatelessWidget {
   const DMZJApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      title: '动漫之家 X',
-      scrollBehavior: AppScrollBehavior(),
-      theme: AppStyle.lightTheme,
-      darkTheme: AppStyle.darkTheme,
-      themeMode:
-          ThemeMode.values[Get.find<AppSettingsService>().themeMode.value],
-      initialRoute: AppPages.kIndex,
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      locale: const Locale("zh", "CN"),
-      supportedLocales: const [Locale("zh", "CN")],
-      getPages: AppPages.routes,
-      debugShowCheckedModeBanner: false,
-      navigatorObservers: [FlutterSmartDialog.observer],
-      builder: FlutterSmartDialog.init(
-        loadingBuilder: ((msg) => const AppLoaddingWidget()),
-        //字体大小不跟随系统变化
-        builder: (context, child) => Obx(
-          () => MediaQuery(
-            data: AppSettingsService.instance.useSystemFontSize.value
-                ? MediaQuery.of(context)
-                : MediaQuery.of(context)
-                    .copyWith(textScaler: const TextScaler.linear(1.0)),
-            child: child!,
+    return DynamicColorBuilder(
+      builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
+        return GetMaterialApp(
+          title: '动漫之家 X',
+          scrollBehavior: AppScrollBehavior(),
+          theme: AppStyle.getLightTheme(colorScheme: lightDynamic),
+          darkTheme: AppStyle.getDarkTheme(colorScheme: darkDynamic),
+          themeMode:
+              ThemeMode.values[Get.find<AppSettingsService>().themeMode.value],
+          initialRoute: AppPages.kIndex,
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          locale: const Locale("zh", "CN"),
+          supportedLocales: const [Locale("zh", "CN")],
+          getPages: AppPages.routes,
+          debugShowCheckedModeBanner: false,
+          navigatorObservers: [FlutterSmartDialog.observer],
+          builder: FlutterSmartDialog.init(
+            loadingBuilder: ((msg) => const AppLoaddingWidget()),
+            //字体大小不跟随系统变化
+            builder: (context, child) => Obx(
+              () => MediaQuery(
+                data: AppSettingsService.instance.useSystemFontSize.value
+                    ? MediaQuery.of(context)
+                    : MediaQuery.of(context)
+                        .copyWith(textScaler: const TextScaler.linear(1.0)),
+                child: child!,
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

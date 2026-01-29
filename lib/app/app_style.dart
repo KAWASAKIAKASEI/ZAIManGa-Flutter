@@ -4,70 +4,79 @@ import 'package:flutter_dmzj/app/app_color.dart';
 import 'package:get/get.dart';
 
 class AppStyle {
-  static ThemeData lightTheme = ThemeData.light(
-    useMaterial3: false,
-  ).copyWith(
-    brightness: Brightness.light,
-    colorScheme: AppColor.colorSchemeLight,
-    scaffoldBackgroundColor: Colors.white,
-    cardColor: Colors.white,
-    appBarTheme: AppBarTheme(
-      elevation: 0,
-      backgroundColor: Colors.transparent,
-      foregroundColor: AppColor.black333,
-      centerTitle: false,
-      shape: Border(
-        bottom: BorderSide(
-          color: Colors.grey.withOpacity(.2),
-          width: 1,
+  static ThemeData lightTheme = getLightTheme();
+  static ThemeData getLightTheme({ColorScheme? colorScheme}) {
+    final scheme = colorScheme ?? AppColor.colorSchemeLight;
+    return ThemeData(
+      useMaterial3: true,
+      colorScheme: scheme,
+      brightness: Brightness.light,
+    ).copyWith(
+      scaffoldBackgroundColor: colorScheme != null ? null : Colors.white,
+      cardColor: colorScheme != null ? null : Colors.white,
+      appBarTheme: AppBarTheme(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        foregroundColor: scheme.onSurface,
+        centerTitle: false,
+        shape: Border(
+          bottom: BorderSide(
+            color: Colors.grey.withOpacity(.2),
+            width: 1,
+          ),
+        ),
+        iconTheme: IconThemeData(
+          color: scheme.onSurface,
+        ),
+        titleTextStyle: TextStyle(
+          fontSize: 16,
+          color: scheme.onSurface,
+        ),
+        systemOverlayStyle: SystemUiOverlayStyle.dark.copyWith(
+          systemNavigationBarColor: Colors.transparent,
         ),
       ),
-      iconTheme: const IconThemeData(
-        color: AppColor.black333,
+    );
+  }
+
+  static ThemeData darkTheme = getDarkTheme();
+  static ThemeData getDarkTheme({ColorScheme? colorScheme}) {
+    final scheme = colorScheme ?? AppColor.colorSchemeDark;
+    return ThemeData(
+      useMaterial3: true,
+      colorScheme: scheme,
+      brightness: Brightness.dark,
+    ).copyWith(
+      primaryColor: scheme.primary,
+      cardColor: const Color(0xff424242),
+      scaffoldBackgroundColor: Colors.black,
+      tabBarTheme: TabBarThemeData(
+        indicatorColor: scheme.primary,
       ),
-      titleTextStyle: const TextStyle(
-        fontSize: 16,
-        color: AppColor.black333,
-      ),
-      systemOverlayStyle: SystemUiOverlayStyle.dark.copyWith(
-        systemNavigationBarColor: Colors.transparent,
-      ),
-    ),
-  );
-  static ThemeData darkTheme = ThemeData.dark(
-    useMaterial3: false,
-  ).copyWith(
-    brightness: Brightness.dark,
-    primaryColor: Colors.blue,
-    cardColor: const Color(0xff424242),
-    colorScheme: AppColor.colorSchemeDark,
-    scaffoldBackgroundColor: Colors.black,
-    tabBarTheme: const TabBarTheme(
-      indicatorColor: Colors.blue,
-    ),
-    appBarTheme: AppBarTheme(
-      elevation: 0,
-      backgroundColor: Colors.transparent,
-      foregroundColor: Colors.white,
-      centerTitle: false,
-      shape: Border(
-        bottom: BorderSide(
-          color: Colors.grey.withOpacity(.2),
-          width: 1,
+      appBarTheme: AppBarTheme(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.white,
+        centerTitle: false,
+        shape: Border(
+          bottom: BorderSide(
+            color: Colors.grey.withOpacity(.2),
+            width: 1,
+          ),
+        ),
+        titleTextStyle: const TextStyle(
+          fontSize: 16,
+          color: Colors.white,
+        ),
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
+        systemOverlayStyle: SystemUiOverlayStyle.light.copyWith(
+          systemNavigationBarColor: Colors.transparent,
         ),
       ),
-      titleTextStyle: const TextStyle(
-        fontSize: 16,
-        color: Colors.white,
-      ),
-      iconTheme: const IconThemeData(
-        color: Colors.white,
-      ),
-      systemOverlayStyle: SystemUiOverlayStyle.light.copyWith(
-        systemNavigationBarColor: Colors.transparent,
-      ),
-    ),
-  );
+    );
+  }
   static const vGap4 = SizedBox(
     height: 4,
   );

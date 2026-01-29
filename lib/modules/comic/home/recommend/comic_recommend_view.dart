@@ -95,10 +95,7 @@ class ComicRecommendView extends StatelessWidget {
           }
           return buildCard(
             context,
-            child: Container(
-              height: 100,
-              color: Colors.blue,
-            ),
+            child: buildTreeColumnGridView(item.data),
             title: item.title.toString(),
           );
         },

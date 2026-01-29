@@ -279,60 +279,60 @@ class ComicReaderController extends BaseController {
       context: Get.context!,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(12),
-          topRight: Radius.circular(12),
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
         ),
       ),
       constraints: const BoxConstraints(
         maxWidth: 500,
       ),
-      backgroundColor: AppStyle.darkTheme.scaffoldBackgroundColor,
-      builder: (context) => Theme(
-        data: AppStyle.darkTheme,
-        child: Column(
-          children: [
-            ListTile(
-              title: Text("目录(${chapters.length})"),
-              trailing: IconButton(
-                onPressed: Get.back,
-                icon: const Icon(Icons.close),
+      builder: (context) => Column(
+        children: [
+          ListTile(
+            title: Text("目录(${chapters.length})"),
+            trailing: IconButton(
+              onPressed: Get.back,
+              icon: const Icon(Icons.close),
+            ),
+            contentPadding: AppStyle.edgeInsetsL12,
+          ),
+          Divider(
+            height: 1.0,
+            color: Theme.of(context).dividerColor.withOpacity(.2),
+          ),
+          Expanded(
+            child: ScrollablePositionedList.separated(
+              initialScrollIndex: chapterIndex.value,
+              itemCount: chapters.length,
+              separatorBuilder: (_, i) => Divider(
+                indent: 12,
+                endIndent: 12,
+                height: 1.0,
+                color: Theme.of(context).dividerColor.withOpacity(.2),
               ),
-              contentPadding: AppStyle.edgeInsetsL12,
+              itemBuilder: (_, i) {
+                var item = chapters[i];
+                return ListTile(
+                  selected: i == chapterIndex.value,
+                  selectedTileColor:
+                      Theme.of(context).colorScheme.secondaryContainer,
+                  selectedColor:
+                      Theme.of(context).colorScheme.onSecondaryContainer,
+                  title: Text(item.chapterTitle),
+                  subtitle: item.updateTime != 0
+                      ? Text(
+                          "更新于${Utils.formatTimestampToDate(item.updateTime)}")
+                      : null,
+                  onTap: () {
+                    chapterIndex.value = i;
+                    loadDetail();
+                    Get.back();
+                  },
+                );
+              },
             ),
-            Divider(
-              height: 1.0,
-              color: Colors.grey.withOpacity(.2),
-            ),
-            Expanded(
-              child: ScrollablePositionedList.separated(
-                initialScrollIndex: chapterIndex.value,
-                itemCount: chapters.length,
-                separatorBuilder: (_, i) => Divider(
-                  indent: 12,
-                  endIndent: 12,
-                  height: 1.0,
-                  color: Colors.grey.withOpacity(.2),
-                ),
-                itemBuilder: (_, i) {
-                  var item = chapters[i];
-                  return ListTile(
-                    selected: i == chapterIndex.value,
-                    title: Text(item.chapterTitle),
-                    subtitle: item.updateTime != 0
-                        ? Text(
-                            "更新于${Utils.formatTimestampToDate(item.updateTime)}")
-                        : null,
-                    onTap: () {
-                      chapterIndex.value = i;
-                      loadDetail();
-                      Get.back();
-                    },
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
       routeSettings: const RouteSettings(name: "/modalBottomSheet"),
     );
@@ -404,8 +404,8 @@ class ComicReaderController extends BaseController {
       context: Get.context!,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(12),
-          topRight: Radius.circular(12),
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
         ),
       ),
       constraints: const BoxConstraints(
@@ -413,134 +413,132 @@ class ComicReaderController extends BaseController {
       ),
       isScrollControlled: true,
       useSafeArea: true,
-      backgroundColor: AppStyle.darkTheme.scaffoldBackgroundColor,
-      builder: (context) => Theme(
-        data: AppStyle.darkTheme,
-        child: Column(
-          children: [
-            ListTile(
-              title: Text("吐槽(${viewPoints.length})"),
-              trailing: IconButton(
-                onPressed: Get.back,
-                icon: const Icon(Icons.close),
-              ),
-              contentPadding: AppStyle.edgeInsetsL12,
+      builder: (context) => Column(
+        children: [
+          ListTile(
+            title: Text("吐槽(${viewPoints.length})"),
+            trailing: IconButton(
+              onPressed: Get.back,
+              icon: const Icon(Icons.close),
             ),
-            Divider(
-              height: 1.0,
-              color: Colors.grey.withOpacity(.2),
-            ),
-            Expanded(
-              child: EasyRefresh(
-                header: const MaterialHeader(),
-                onRefresh: () async {
-                  loadViewPoints();
-                },
-                child: Obx(
-                  () => settings.comicReaderOldViewPoint.value
-                      ? SingleChildScrollView(
-                          child: Padding(
-                            padding: AppStyle.edgeInsetsA12,
-                            child: Wrap(
-                              spacing: 8,
-                              runSpacing: 8,
-                              children: viewPoints.map<Widget>((item) {
-                                return InkWell(
-                                  onTap: () {
+            contentPadding: AppStyle.edgeInsetsL12,
+          ),
+          Divider(
+            height: 1.0,
+            color: Theme.of(context).dividerColor.withOpacity(.2),
+          ),
+          Expanded(
+            child: EasyRefresh(
+              header: const MaterialHeader(),
+              onRefresh: () async {
+                loadViewPoints();
+              },
+              child: Obx(
+                () => settings.comicReaderOldViewPoint.value
+                    ? SingleChildScrollView(
+                        child: Padding(
+                          padding: AppStyle.edgeInsetsA12,
+                          child: Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: viewPoints.map<Widget>((item) {
+                              return InkWell(
+                                onTap: () {
+                                  likeViewPoint(item);
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                    borderRadius: AppStyle.radius8,
+                                  ),
+                                  child: Text(
+                                    item.content,
+                                    style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onPrimary),
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      )
+                    : ListView.separated(
+                        padding: EdgeInsets.zero,
+                        itemCount: viewPoints.length,
+                        separatorBuilder: (_, i) => Divider(
+                          indent: 12,
+                          endIndent: 12,
+                          height: 1.0,
+                          color: Theme.of(context).dividerColor.withOpacity(.2),
+                        ),
+                        itemBuilder: (_, i) {
+                          var item = viewPoints[i];
+                          return Padding(
+                            padding: AppStyle.edgeInsetsA12
+                                .copyWith(top: 8, bottom: 8),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    item.content,
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ),
+                                AppStyle.hGap12,
+                                TextButton.icon(
+                                  style: TextButton.styleFrom(
+                                    tapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                  ),
+                                  onPressed: () {
                                     likeViewPoint(item);
                                   },
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 4,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.blue,
-                                      borderRadius: AppStyle.radius8,
-                                    ),
-                                    child: Text(
-                                      item.content,
-                                      style:
-                                          const TextStyle(color: Colors.white),
-                                    ),
+                                  icon: const Icon(
+                                    Remix.thumb_up_line,
+                                    size: 16,
                                   ),
-                                );
-                              }).toList(),
+                                  label: Obx(() => Text("${item.num.value}")),
+                                ),
+                              ],
                             ),
-                          ),
-                        )
-                      : ListView.separated(
-                          padding: EdgeInsets.zero,
-                          itemCount: viewPoints.length,
-                          separatorBuilder: (_, i) => Divider(
-                            indent: 12,
-                            endIndent: 12,
-                            height: 1.0,
-                            color: Colors.grey.withOpacity(.2),
-                          ),
-                          itemBuilder: (_, i) {
-                            var item = viewPoints[i];
-                            return Padding(
-                              padding: AppStyle.edgeInsetsA12
-                                  .copyWith(top: 8, bottom: 8),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      item.content,
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 15,
-                                      ),
-                                    ),
-                                  ),
-                                  AppStyle.hGap12,
-                                  TextButton.icon(
-                                    style: TextButton.styleFrom(
-                                      tapTargetSize:
-                                          MaterialTapTargetSize.shrinkWrap,
-                                    ),
-                                    onPressed: () {
-                                      likeViewPoint(item);
-                                    },
-                                    icon: const Icon(
-                                      Remix.thumb_up_line,
-                                      size: 16,
-                                    ),
-                                    label: Obx(() => Text("${item.num.value}")),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
+                          );
+                        },
+                      ),
+              ),
+            ),
+          ),
+          Container(
+            padding: AppStyle.edgeInsetsA8.copyWith(
+              bottom: 8 + AppStyle.bottomBarHeight,
+            ),
+            child: TextField(
+              controller: tucaoController,
+              onSubmitted: (e) {
+                sendViewPoint(e);
+              },
+              decoration: InputDecoration(
+                hintText: "发表吐槽",
+                contentPadding: AppStyle.edgeInsetsH12,
+                border: const OutlineInputBorder(),
+                suffixIcon: TextButton(
+                  onPressed: () {
+                    sendViewPoint(tucaoController.text);
+                  },
+                  child: const Text("发布"),
                 ),
               ),
             ),
-            Container(
-              padding: AppStyle.edgeInsetsA8.copyWith(
-                bottom: 8 + AppStyle.bottomBarHeight,
-              ),
-              child: TextField(
-                controller: tucaoController,
-                onSubmitted: (e) {
-                  sendViewPoint(e);
-                },
-                decoration: InputDecoration(
-                  hintText: "发表吐槽",
-                  contentPadding: AppStyle.edgeInsetsH12,
-                  border: const OutlineInputBorder(),
-                  suffixIcon: TextButton(
-                    onPressed: () {
-                      sendViewPoint(tucaoController.text);
-                    },
-                    child: const Text("发布"),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
       routeSettings: const RouteSettings(name: "/modalBottomSheet"),
     );
@@ -554,171 +552,149 @@ class ComicReaderController extends BaseController {
       context: Get.context!,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(12),
-          topRight: Radius.circular(12),
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
         ),
       ),
       constraints: const BoxConstraints(
         maxWidth: 500,
       ),
-      backgroundColor: AppStyle.darkTheme.scaffoldBackgroundColor,
-      builder: (context) => Theme(
-        data: AppStyle.darkTheme,
-        child: Column(
-          children: [
-            ListTile(
-              title: const Text("设置"),
-              trailing: IconButton(
-                onPressed: Get.back,
-                icon: const Icon(Icons.close),
-              ),
-              contentPadding: AppStyle.edgeInsetsL12,
+      builder: (context) => Column(
+        children: [
+          ListTile(
+            title: const Text("设置"),
+            trailing: IconButton(
+              onPressed: Get.back,
+              icon: const Icon(Icons.close),
             ),
-            Expanded(
-              child: Obx(
-                () => ListView(
-                  padding: AppStyle.edgeInsetsA12,
-                  children: [
-                    buildBGItem(
-                      child: SwitchListTile(
-                        value: settings.comicReaderHD.value,
-                        onChanged: (e) {
-                          settings.setComicReaderHD(e);
-                          loadDetail();
-                        },
-                        title: const Text("优先加载高清图"),
-                        subtitle: const Text("部分单行本可能未分页"),
-                      ),
+            contentPadding: AppStyle.edgeInsetsL12,
+          ),
+          Expanded(
+            child: Obx(
+              () => ListView(
+                padding: AppStyle.edgeInsetsA12,
+                children: [
+                  buildBGItem(
+                    context,
+                    child: SwitchListTile(
+                      value: settings.comicReaderHD.value,
+                      onChanged: (e) {
+                        settings.setComicReaderHD(e);
+                        loadDetail();
+                      },
+                      title: const Text("优先加载高清图"),
+                      subtitle: const Text("部分单行本可能未分页"),
                     ),
-                    //AppStyle.vGap12,
-                    Visibility(
-                      //条漫不允许修改阅读方向
-                      visible: !isLongComic,
-                      child: Padding(
-                        padding: AppStyle.edgeInsetsT12,
-                        child: buildBGItem(
-                          child: ListTile(
-                            title: const Text("阅读方向"),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                buildSelectedButton(
-                                  onTap: () {
-                                    setDirection(ReaderDirection.kLeftToRight);
-                                  },
-                                  selected:
-                                      settings.comicReaderDirection.value ==
-                                          ReaderDirection.kLeftToRight,
-                                  child: const Icon(Remix.arrow_right_line),
-                                ),
-                                AppStyle.hGap8,
-                                buildSelectedButton(
-                                  onTap: () {
-                                    setDirection(ReaderDirection.kRightToLeft);
-                                  },
-                                  selected:
-                                      settings.comicReaderDirection.value ==
-                                          ReaderDirection.kRightToLeft,
-                                  child: const Icon(Remix.arrow_left_line),
-                                ),
-                                AppStyle.hGap8,
-                                buildSelectedButton(
-                                  onTap: () {
-                                    setDirection(ReaderDirection.kUpToDown);
-                                  },
-                                  selected:
-                                      settings.comicReaderDirection.value ==
-                                          ReaderDirection.kUpToDown,
-                                  child: const Icon(Remix.arrow_down_line),
-                                )
-                              ],
-                            ),
+                  ),
+                  //AppStyle.vGap12,
+                  Visibility(
+                    //条漫不允许修改阅读方向
+                    visible: !isLongComic,
+                    child: Padding(
+                      padding: AppStyle.edgeInsetsT12,
+                      child: buildBGItem(
+                        context,
+                        child: ListTile(
+                          title: const Text("阅读方向"),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              buildSelectedButton(
+                                onTap: () {
+                                  setDirection(ReaderDirection.kLeftToRight);
+                                },
+                                selected: settings.comicReaderDirection.value ==
+                                    ReaderDirection.kLeftToRight,
+                                child: const Icon(Remix.arrow_right_line),
+                              ),
+                              AppStyle.hGap8,
+                              buildSelectedButton(
+                                onTap: () {
+                                  setDirection(ReaderDirection.kRightToLeft);
+                                },
+                                selected: settings.comicReaderDirection.value ==
+                                    ReaderDirection.kRightToLeft,
+                                child: const Icon(Remix.arrow_left_line),
+                              ),
+                              AppStyle.hGap8,
+                              buildSelectedButton(
+                                onTap: () {
+                                  setDirection(ReaderDirection.kUpToDown);
+                                },
+                                selected: settings.comicReaderDirection.value ==
+                                    ReaderDirection.kUpToDown,
+                                child: const Icon(Remix.arrow_down_line),
+                              )
+                            ],
                           ),
                         ),
                       ),
                     ),
-                    AppStyle.vGap12,
-                    buildBGItem(
-                      child: SwitchListTile(
-                        value: settings.comicReaderLeftHandMode.value,
-                        onChanged: (e) {
-                          settings.setComicReaderLeftHandMode(e);
-                        },
-                        title: const Text("操作反转"),
-                        subtitle: const Text("点击左侧下一页，右侧上一页"),
-                      ),
+                  ),
+                  AppStyle.vGap12,
+                  buildBGItem(
+                    context,
+                    child: SwitchListTile(
+                      value: settings.comicReaderLeftHandMode.value,
+                      onChanged: (e) {
+                        settings.setComicReaderLeftHandMode(e);
+                      },
+                      title: const Text("操作反转"),
+                      subtitle: const Text("点击左侧下一页，右侧上一页"),
                     ),
-                    AppStyle.vGap12,
-                    buildBGItem(
-                      child: SwitchListTile(
-                        value: settings.comicReaderFullScreen.value,
-                        onChanged: (e) {
-                          settings.setComicReaderFullScreen(e);
-                          if (e) {
-                            setFull();
-                          } else {
-                            exitFull();
-                          }
-                        },
-                        title: const Text("全屏阅读"),
-                      ),
+                  ),
+                  AppStyle.vGap12,
+                  buildBGItem(
+                    context,
+                    child: SwitchListTile(
+                      value: settings.comicReaderFullScreen.value,
+                      onChanged: (e) {
+                        settings.setComicReaderFullScreen(e);
+                        if (e) {
+                          setFull();
+                        } else {
+                          exitFull();
+                        }
+                      },
+                      title: const Text("全屏阅读"),
                     ),
-                    AppStyle.vGap12,
-                    buildBGItem(
-                      child: SwitchListTile(
-                        value: settings.comicReaderShowStatus.value,
-                        onChanged: (e) {
-                          settings.setComicReaderShowStatus(e);
-                        },
-                        title: const Text("显示状态信息"),
-                      ),
+                  ),
+                  AppStyle.vGap12,
+                  buildBGItem(
+                    context,
+                    child: SwitchListTile(
+                      value: settings.comicReaderShowStatus.value,
+                      onChanged: (e) {
+                        settings.setComicReaderShowStatus(e);
+                      },
+                      title: const Text("显示状态信息"),
                     ),
-                    // AppStyle.vGap12,
-                    // buildBGItem(
-                    //   child: SwitchListTile(
-                    //     value: settings.comicReaderShowViewPoint.value,
-                    //     onChanged: (e) {
-                    //       settings.setComicReaderShowViewPoint(e);
-                    //       setShowViewPoint(e);
-                    //     },
-                    //     title: const Text("显示吐槽"),
-                    //   ),
-                    // ),
-                    // AppStyle.vGap12,
-                    // buildBGItem(
-                    //   child: SwitchListTile(
-                    //     value: settings.comicReaderOldViewPoint.value,
-                    //     onChanged: (e) {
-                    //       settings.setComicReaderOldViewPoint(e);
-                    //     },
-                    //     title: const Text("旧板吐槽"),
-                    //   ),
-                    // ),
-                    AppStyle.vGap12,
-                    buildBGItem(
-                      child: SwitchListTile(
-                        value: settings.comicReaderPageAnimation.value,
-                        onChanged: (e) {
-                          settings.setComicReaderPageAnimation(e);
-                        },
-                        title: const Text("翻页动画"),
-                      ),
+                  ),
+                  AppStyle.vGap12,
+                  buildBGItem(
+                    context,
+                    child: SwitchListTile(
+                      value: settings.comicReaderPageAnimation.value,
+                      onChanged: (e) {
+                        settings.setComicReaderPageAnimation(e);
+                      },
+                      title: const Text("翻页动画"),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget buildBGItem({required Widget child}) {
+  Widget buildBGItem(BuildContext context, {required Widget child}) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: AppStyle.radius8,
-        color: AppStyle.darkTheme.cardColor,
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
       ),
       child: child,
     );
@@ -726,16 +702,20 @@ class ComicReaderController extends BaseController {
 
   Widget buildSelectedButton(
       {required Widget child, bool selected = false, Function()? onTap}) {
-    return OutlinedButton(
-      style: OutlinedButton.styleFrom(
-        foregroundColor: selected ? Colors.blue : Colors.grey,
-        side: BorderSide(
-          color: selected ? Colors.blue : Colors.grey,
+    return Builder(builder: (context) {
+      return OutlinedButton(
+        style: OutlinedButton.styleFrom(
+          foregroundColor:
+              selected ? Theme.of(context).colorScheme.primary : Colors.grey,
+          side: BorderSide(
+            color:
+                selected ? Theme.of(context).colorScheme.primary : Colors.grey,
+          ),
         ),
-      ),
-      onPressed: onTap,
-      child: child,
-    );
+        onPressed: onTap,
+        child: child,
+      );
+    });
   }
 
   void setDirection(int value) {

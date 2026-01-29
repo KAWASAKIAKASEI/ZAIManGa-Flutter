@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   battery_plus
   connectivity_plus
+  dynamic_color
   file_selector_windows
   permission_handler_windows
   share_plus

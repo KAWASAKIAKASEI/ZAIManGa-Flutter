@@ -33,7 +33,7 @@ class ComicReaderPage extends GetView<ComicReaderController> {
       focusNode: controller.focusNode,
       autofocus: true,
       child: Theme(
-        data: AppStyle.darkTheme,
+        data: Theme.of(context),
         child: Scaffold(
           resizeToAvoidBottomInset: false,
           body: Stack(
@@ -47,8 +47,8 @@ class ComicReaderPage extends GetView<ComicReaderController> {
                     },
                     child:
                         controller.direction.value == ReaderDirection.kUpToDown
-                            ? buildVertical()
-                            : buildHorizontal(),
+                            ? buildVertical(context)
+                            : buildHorizontal(context),
                   ),
                 ),
               ),
@@ -117,7 +117,7 @@ class ComicReaderPage extends GetView<ComicReaderController> {
                     offstage: !controller.settings.comicReaderShowStatus.value,
                     child: Container(
                       decoration: const BoxDecoration(
-                        color: Colors.black38,
+                        color: Colors.black54,
                         borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(8),
                         ),
@@ -135,14 +135,23 @@ class ComicReaderPage extends GetView<ComicReaderController> {
                               child: Text(
                                 controller.detail.value.chapterTitle,
                                 overflow: TextOverflow.ellipsis,
-                                style:
-                                    const TextStyle(fontSize: 12, height: 1.0),
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  height: 1.0,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                             AppStyle.hGap8,
                             Text(
                               "${controller.currentIndex.value + 1} / ${controller.detail.value.pageUrls.length}",
-                              style: const TextStyle(fontSize: 12, height: 1.0),
+                              style: const TextStyle(
+                                fontSize: 12,
+                                height: 1.0,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ],
                         ),
@@ -156,13 +165,19 @@ class ComicReaderPage extends GetView<ComicReaderController> {
                 () => AnimatedPositioned(
                   top: controller.showControls.value
                       ? 0
-                      : -(48 + AppStyle.statusBarHeight),
+                      : -(64 + AppStyle.statusBarHeight),
                   left: 0,
                   right: 0,
                   duration: const Duration(milliseconds: 100),
                   child: Container(
-                    color: AppStyle.darkTheme.cardColor,
-                    height: 48 + AppStyle.statusBarHeight,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(16),
+                        bottomRight: Radius.circular(16),
+                      ),
+                    ),
+                    height: 64 + AppStyle.statusBarHeight,
                     padding: EdgeInsets.only(top: AppStyle.statusBarHeight),
                     child: Row(
                       children: [
@@ -178,6 +193,7 @@ class ComicReaderPage extends GetView<ComicReaderController> {
                                   .chapterTitle,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.titleLarge,
                             ),
                           ),
                         ),
@@ -191,72 +207,53 @@ class ComicReaderPage extends GetView<ComicReaderController> {
                 () => AnimatedPositioned(
                   bottom: controller.showControls.value
                       ? 0
-                      : -(104 + AppStyle.bottomBarHeight),
+                      : -(136 + AppStyle.bottomBarHeight),
                   left: 0,
                   right: 0,
                   duration: const Duration(milliseconds: 100),
                   child: Container(
-                    color: AppStyle.darkTheme.cardColor,
-                    height: 104 + AppStyle.bottomBarHeight,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(16),
+                        topRight: Radius.circular(16),
+                      ),
+                    ),
+                    height: 136 + AppStyle.bottomBarHeight,
                     padding: EdgeInsets.only(bottom: AppStyle.bottomBarHeight),
                     alignment: Alignment.center,
                     child: Container(
                       constraints: const BoxConstraints(
-                        maxWidth: 500,
+                        maxWidth: 600,
                       ),
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           buildSilderBar(),
-                          Material(
-                            color: AppStyle.darkTheme.cardColor,
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: IconButton(
-                                    onPressed: controller.forwardChapter,
-                                    icon: const Icon(Remix.skip_back_line),
-                                  ),
-                                ),
-                                // Obx(
-                                //   () => Visibility(
-                                //     visible: controller.settings
-                                //         .comicReaderShowViewPoint.value,
-                                //     child: Expanded(
-                                //       child: IconButton(
-                                //         onPressed: controller.showComment,
-                                //         icon: Badge(
-                                //           label: Text(
-                                //             "${controller.viewPoints.length}",
-                                //             style: const TextStyle(
-                                //                 color: Colors.white),
-                                //           ),
-                                //           child: const Icon(
-                                //               Remix.chat_smile_2_line),
-                                //         ),
-                                //       ),
-                                //     ),
-                                //   ),
-                                //),
-                                Expanded(
-                                  child: IconButton(
-                                    onPressed: controller.showMenu,
-                                    icon: const Icon(Remix.file_list_line),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: IconButton(
-                                    onPressed: controller.showSettings,
-                                    icon: const Icon(Remix.settings_line),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: IconButton(
-                                    onPressed: controller.nextChapter,
-                                    icon: const Icon(Remix.skip_forward_line),
-                                  ),
-                                ),
-                              ],
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              IconButton.filledTonal(
+                                onPressed: controller.forwardChapter,
+                                icon: const Icon(Remix.skip_back_line),
+                                tooltip: "上一话",
+                              ),
+                              IconButton.filledTonal(
+                                onPressed: controller.showMenu,
+                                icon: const Icon(Remix.file_list_line),
+                                tooltip: "目录",
+                              ),
+                              IconButton.filledTonal(
+                                onPressed: controller.showSettings,
+                                icon: const Icon(Remix.settings_line),
+                                tooltip: "设置",
+                              ),
+                              IconButton.filledTonal(
+                                onPressed: controller.nextChapter,
+                                icon: const Icon(Remix.skip_forward_line),
+                                tooltip: "下一话",
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -271,7 +268,7 @@ class ComicReaderPage extends GetView<ComicReaderController> {
     );
   }
 
-  Widget buildHorizontal() {
+  Widget buildHorizontal(BuildContext context) {
     return EasyRefresh(
       header: MaterialHeader2(
         triggerOffset: 80,
@@ -281,9 +278,9 @@ class ComicReaderPage extends GetView<ComicReaderController> {
             borderRadius: AppStyle.radius24,
           ),
           padding: AppStyle.edgeInsetsA12,
-          child: const Icon(
+          child: Icon(
             Icons.arrow_circle_left,
-            color: Colors.blue,
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
       ),
@@ -291,13 +288,13 @@ class ComicReaderPage extends GetView<ComicReaderController> {
         triggerOffset: 80,
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: AppStyle.radius24,
           ),
           padding: AppStyle.edgeInsetsA12,
-          child: const Icon(
+          child: Icon(
             Icons.arrow_circle_right,
-            color: Colors.blue,
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
       ),
@@ -343,7 +340,7 @@ class ComicReaderPage extends GetView<ComicReaderController> {
     );
   }
 
-  Widget buildVertical() {
+  Widget buildVertical(BuildContext context) {
     return EasyRefresh(
       header: MaterialHeader2(
         triggerOffset: 80,
@@ -353,9 +350,9 @@ class ComicReaderPage extends GetView<ComicReaderController> {
             borderRadius: AppStyle.radius24,
           ),
           padding: AppStyle.edgeInsetsA12,
-          child: const Icon(
+          child: Icon(
             Icons.arrow_circle_up,
-            color: Colors.blue,
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
       ),
@@ -363,13 +360,13 @@ class ComicReaderPage extends GetView<ComicReaderController> {
         triggerOffset: 80,
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: AppStyle.radius24,
           ),
           padding: AppStyle.edgeInsetsA12,
-          child: const Icon(
+          child: Icon(
             Icons.arrow_circle_down,
-            color: Colors.blue,
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
       ),
@@ -550,11 +547,17 @@ class ComicReaderPage extends GetView<ComicReaderController> {
         Icon(
           icon,
           size: 12,
+          color: Colors.white,
         ),
         AppStyle.hGap4,
         Text(
           name,
-          style: const TextStyle(fontSize: 12, height: 1.0),
+          style: const TextStyle(
+            fontSize: 12,
+            height: 1.0,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         AppStyle.hGap8,
       ],
@@ -594,7 +597,12 @@ class ComicReaderPage extends GetView<ComicReaderController> {
           // AppStyle.hGap4,
           Text(
             "电量 $battery%",
-            style: const TextStyle(fontSize: 12, height: 1.0),
+            style: const TextStyle(
+              fontSize: 12,
+              height: 1.0,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           AppStyle.hGap8,
         ],

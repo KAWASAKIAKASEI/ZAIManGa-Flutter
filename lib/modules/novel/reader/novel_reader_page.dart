@@ -36,7 +36,7 @@ class NovelReaderPage extends GetView<NovelReaderController> {
       focusNode: controller.focusNode,
       autofocus: true,
       child: Theme(
-        data: AppStyle.darkTheme,
+        data: Theme.of(context),
         child: Obx(
           () => Scaffold(
             resizeToAvoidBottomInset: false,
@@ -52,11 +52,11 @@ class NovelReaderPage extends GetView<NovelReaderController> {
                         controller.setShowControls();
                       },
                       child: controller.isPicture.value
-                          ? buildPicture()
+                          ? buildPicture(context)
                           : (controller.direction.value ==
                                   ReaderDirection.kUpToDown
-                              ? buildVertical()
-                              : buildHorizontal()),
+                              ? buildVertical(context)
+                              : buildHorizontal(context)),
                     ),
                   ),
                 ),
@@ -123,13 +123,19 @@ class NovelReaderPage extends GetView<NovelReaderController> {
                   () => AnimatedPositioned(
                     top: controller.showControls.value
                         ? 0
-                        : -(48 + AppStyle.statusBarHeight),
+                        : -(64 + AppStyle.statusBarHeight),
                     left: 0,
                     right: 0,
                     duration: const Duration(milliseconds: 100),
                     child: Container(
-                      color: AppStyle.darkTheme.cardColor,
-                      height: 48 + AppStyle.statusBarHeight,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surface,
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(16),
+                          bottomRight: Radius.circular(16),
+                        ),
+                      ),
+                      height: 64 + AppStyle.statusBarHeight,
                       padding: EdgeInsets.only(top: AppStyle.statusBarHeight),
                       child: Row(
                         children: [
@@ -144,6 +150,7 @@ class NovelReaderPage extends GetView<NovelReaderController> {
                                   .chapterName,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.titleLarge,
                             ),
                           ),
                         ],
@@ -156,53 +163,54 @@ class NovelReaderPage extends GetView<NovelReaderController> {
                   () => AnimatedPositioned(
                     bottom: controller.showControls.value
                         ? 0
-                        : -(104 + AppStyle.bottomBarHeight),
+                        : -(136 + AppStyle.bottomBarHeight),
                     left: 0,
                     right: 0,
                     duration: const Duration(milliseconds: 100),
                     child: Container(
-                      color: AppStyle.darkTheme.cardColor,
-                      height: 104 + AppStyle.bottomBarHeight,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surface,
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(16),
+                          topRight: Radius.circular(16),
+                        ),
+                      ),
+                      height: 136 + AppStyle.bottomBarHeight,
                       padding:
                           EdgeInsets.only(bottom: AppStyle.bottomBarHeight),
                       alignment: Alignment.center,
                       child: Container(
                         constraints: const BoxConstraints(
-                          maxWidth: 500,
+                          maxWidth: 600,
                         ),
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             buildSilderBar(),
-                            Material(
-                              color: AppStyle.darkTheme.cardColor,
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: IconButton(
-                                      onPressed: controller.forwardChapter,
-                                      icon: const Icon(Remix.skip_back_line),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: IconButton(
-                                      onPressed: controller.showMenu,
-                                      icon: const Icon(Remix.file_list_line),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: IconButton(
-                                      onPressed: controller.showSettings,
-                                      icon: const Icon(Remix.settings_line),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: IconButton(
-                                      onPressed: controller.nextChapter,
-                                      icon: const Icon(Remix.skip_forward_line),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                IconButton.filledTonal(
+                                  onPressed: controller.forwardChapter,
+                                  icon: const Icon(Remix.skip_back_line),
+                                  tooltip: "上一话",
+                                ),
+                                IconButton.filledTonal(
+                                  onPressed: controller.showMenu,
+                                  icon: const Icon(Remix.file_list_line),
+                                  tooltip: "目录",
+                                ),
+                                IconButton.filledTonal(
+                                  onPressed: controller.showSettings,
+                                  icon: const Icon(Remix.settings_line),
+                                  tooltip: "设置",
+                                ),
+                                IconButton.filledTonal(
+                                  onPressed: controller.nextChapter,
+                                  icon: const Icon(Remix.skip_forward_line),
+                                  tooltip: "下一话",
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -218,19 +226,19 @@ class NovelReaderPage extends GetView<NovelReaderController> {
     );
   }
 
-  Widget buildHorizontal() {
+  Widget buildHorizontal(BuildContext context) {
     return EasyRefresh(
       header: MaterialHeader2(
         triggerOffset: 80,
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: AppStyle.radius24,
           ),
           padding: AppStyle.edgeInsetsA12,
-          child: const Icon(
+          child: Icon(
             Icons.arrow_circle_left,
-            color: Colors.blue,
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
       ),
@@ -238,13 +246,13 @@ class NovelReaderPage extends GetView<NovelReaderController> {
         triggerOffset: 80,
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: AppStyle.radius24,
           ),
           padding: AppStyle.edgeInsetsA12,
-          child: const Icon(
+          child: Icon(
             Icons.arrow_circle_right,
-            color: Colors.blue,
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
       ),
@@ -277,46 +285,47 @@ class NovelReaderPage extends GetView<NovelReaderController> {
     );
   }
 
-  Widget buildVertical() {
+  Widget buildVertical(BuildContext context) {
     return SizedBox(
-      height: double.infinity,
-      child: Padding(
-        padding: EdgeInsets.only(
-          top: AppStyle.statusBarHeight,
-        ),
+        height: double.infinity,
         child: Padding(
-          padding: AppStyle.edgeInsetsA12.copyWith(
-            bottom: (controller.settings.novelReaderShowStatus.value ? 32 : 12),
+          padding: EdgeInsets.only(
+            top: AppStyle.statusBarHeight,
           ),
-          child: EasyRefresh(
-            header: MaterialHeader2(
-              triggerOffset: 80,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: AppStyle.radius24,
-                ),
-                padding: AppStyle.edgeInsetsA12,
-                child: const Icon(
-                  Icons.arrow_circle_up,
-                  color: Colors.blue,
+          child: Padding(
+            padding: AppStyle.edgeInsetsA12.copyWith(
+              bottom:
+                  (controller.settings.novelReaderShowStatus.value ? 32 : 12),
+            ),
+            child: EasyRefresh(
+              header: MaterialHeader2(
+                triggerOffset: 80,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface,
+                    borderRadius: AppStyle.radius24,
+                  ),
+                  padding: AppStyle.edgeInsetsA12,
+                  child: Icon(
+                    Icons.arrow_circle_up,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
                 ),
               ),
-            ),
-            footer: MaterialFooter2(
-              triggerOffset: 80,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: AppStyle.radius24,
-                ),
-                padding: AppStyle.edgeInsetsA12,
-                child: const Icon(
-                  Icons.arrow_circle_down,
-                  color: Colors.blue,
+              footer: MaterialFooter2(
+                triggerOffset: 80,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface,
+                    borderRadius: AppStyle.radius24,
+                  ),
+                  padding: AppStyle.edgeInsetsA12,
+                  child: Icon(
+                    Icons.arrow_circle_down,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
                 ),
               ),
-            ),
             refreshOnStart: false,
             onRefresh: () async {
               controller.forwardChapter();
@@ -345,44 +354,44 @@ class NovelReaderPage extends GetView<NovelReaderController> {
     );
   }
 
-  Widget buildPicture() {
+  Widget buildPicture(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(
-        top: AppStyle.statusBarHeight,
-      ),
-      child: EasyRefresh(
-        header: MaterialHeader2(
-          triggerOffset: 80,
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: AppStyle.radius24,
-            ),
-            padding: AppStyle.edgeInsetsA12,
-            child: Icon(
-              controller.direction.value != ReaderDirection.kUpToDown
-                  ? Icons.arrow_circle_left
-                  : Icons.arrow_circle_up,
-              color: Colors.blue,
+        padding: EdgeInsets.only(
+          top: AppStyle.statusBarHeight,
+        ),
+        child: EasyRefresh(
+          header: MaterialHeader2(
+            triggerOffset: 80,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: AppStyle.radius24,
+              ),
+              padding: AppStyle.edgeInsetsA12,
+              child: Icon(
+                controller.direction.value != ReaderDirection.kUpToDown
+                    ? Icons.arrow_circle_left
+                    : Icons.arrow_circle_up,
+                color: Theme.of(context).colorScheme.primary,
+              ),
             ),
           ),
-        ),
-        footer: MaterialFooter2(
-          triggerOffset: 80,
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: AppStyle.radius24,
-            ),
-            padding: AppStyle.edgeInsetsA12,
-            child: Icon(
-              controller.direction.value != ReaderDirection.kUpToDown
-                  ? Icons.arrow_circle_right
-                  : Icons.arrow_circle_down,
-              color: Colors.blue,
+          footer: MaterialFooter2(
+            triggerOffset: 80,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: AppStyle.radius24,
+              ),
+              padding: AppStyle.edgeInsetsA12,
+              child: Icon(
+                controller.direction.value != ReaderDirection.kUpToDown
+                    ? Icons.arrow_circle_right
+                    : Icons.arrow_circle_down,
+                color: Theme.of(context).colorScheme.primary,
+              ),
             ),
           ),
-        ),
         refreshOnStart: false,
         onRefresh: () async {
           controller.forwardChapter();
@@ -523,6 +532,10 @@ class NovelReaderPage extends GetView<NovelReaderController> {
         () => Offstage(
           offstage: !controller.settings.novelReaderShowStatus.value,
           child: Container(
+            decoration: BoxDecoration(
+              color: Colors.black54,
+              borderRadius: BorderRadius.circular(8),
+            ),
             padding: AppStyle.edgeInsetsA12.copyWith(top: 4, bottom: 4),
             child: Obx(
               () => Row(
@@ -533,18 +546,20 @@ class NovelReaderPage extends GetView<NovelReaderController> {
                   controller.direction.value != ReaderDirection.kUpToDown
                       ? Text(
                           "${controller.currentIndex.value + 1} / ${controller.maxPage.value}",
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 12,
                             height: 1.0,
-                            color: color.withOpacity(.6),
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
                           ),
                         )
                       : Text(
                           "${(controller.progress.value * 100).toStringAsFixed(0)}%",
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 12,
                             height: 1.0,
-                            color: color.withOpacity(.6),
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                 ],
@@ -595,12 +610,16 @@ class NovelReaderPage extends GetView<NovelReaderController> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Icon(icon, size: 12, color: color.withOpacity(.6)),
+        Icon(icon, size: 12, color: Colors.white),
         AppStyle.hGap4,
         Text(
           name,
-          style: TextStyle(
-              fontSize: 12, height: 1.0, color: color.withOpacity(.6)),
+          style: const TextStyle(
+            fontSize: 12,
+            height: 1.0,
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         AppStyle.hGap8,
       ],
@@ -636,8 +655,12 @@ class NovelReaderPage extends GetView<NovelReaderController> {
           //Icon(icon, size: 12, color: color.withOpacity(.6)),
           Text(
             "电量 $battery%",
-            style: TextStyle(
-                fontSize: 12, height: 1.0, color: color.withOpacity(.6)),
+            style: const TextStyle(
+              fontSize: 12,
+              height: 1.0,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           AppStyle.hGap8,
         ],

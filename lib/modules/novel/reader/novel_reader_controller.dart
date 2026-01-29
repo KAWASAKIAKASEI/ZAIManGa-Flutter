@@ -411,214 +411,220 @@ class NovelReaderController extends BaseController {
       context: Get.context!,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(12),
-          topRight: Radius.circular(12),
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
         ),
       ),
       constraints: const BoxConstraints(
         maxWidth: 500,
       ),
-      backgroundColor: AppStyle.darkTheme.scaffoldBackgroundColor,
-      builder: (context) => Theme(
-        data: AppStyle.darkTheme,
-        child: Column(
-          children: [
-            ListTile(
-              title: const Text("设置"),
-              trailing: IconButton(
-                onPressed: Get.back,
-                icon: const Icon(Icons.close),
-              ),
-              contentPadding: AppStyle.edgeInsetsL12,
+      builder: (context) => Column(
+        children: [
+          ListTile(
+            title: const Text("设置"),
+            trailing: IconButton(
+              onPressed: Get.back,
+              icon: const Icon(Icons.close),
             ),
-            Expanded(
-              child: Obx(
-                () => ListView(
-                  padding: AppStyle.edgeInsetsA12,
-                  children: [
-                    buildBGItem(
-                      child: ListTile(
-                        title: const Text("阅读方向"),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            buildSelectedButton(
-                              onTap: () {
-                                setDirection(ReaderDirection.kLeftToRight);
-                              },
-                              selected: settings.novelReaderDirection.value ==
-                                  ReaderDirection.kLeftToRight,
-                              child: const Icon(Remix.arrow_right_line),
-                            ),
-                            AppStyle.hGap8,
-                            buildSelectedButton(
-                              onTap: () {
-                                setDirection(ReaderDirection.kRightToLeft);
-                              },
-                              selected: settings.novelReaderDirection.value ==
-                                  ReaderDirection.kRightToLeft,
-                              child: const Icon(Remix.arrow_left_line),
-                            ),
-                            AppStyle.hGap8,
-                            buildSelectedButton(
-                              onTap: () {
-                                setDirection(ReaderDirection.kUpToDown);
-                              },
-                              selected: settings.novelReaderDirection.value ==
-                                  ReaderDirection.kUpToDown,
-                              child: const Icon(Remix.arrow_down_line),
-                            )
-                          ],
-                        ),
+            contentPadding: AppStyle.edgeInsetsL12,
+          ),
+          Expanded(
+            child: Obx(
+              () => ListView(
+                padding: AppStyle.edgeInsetsA12,
+                children: [
+                  buildBGItem(
+                    context,
+                    child: ListTile(
+                      title: const Text("阅读方向"),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          buildSelectedButton(
+                            onTap: () {
+                              setDirection(ReaderDirection.kLeftToRight);
+                            },
+                            selected: settings.novelReaderDirection.value ==
+                                ReaderDirection.kLeftToRight,
+                            child: const Icon(Remix.arrow_right_line),
+                          ),
+                          AppStyle.hGap8,
+                          buildSelectedButton(
+                            onTap: () {
+                              setDirection(ReaderDirection.kRightToLeft);
+                            },
+                            selected: settings.novelReaderDirection.value ==
+                                ReaderDirection.kRightToLeft,
+                            child: const Icon(Remix.arrow_left_line),
+                          ),
+                          AppStyle.hGap8,
+                          buildSelectedButton(
+                            onTap: () {
+                              setDirection(ReaderDirection.kUpToDown);
+                            },
+                            selected: settings.novelReaderDirection.value ==
+                                ReaderDirection.kUpToDown,
+                            child: const Icon(Remix.arrow_down_line),
+                          )
+                        ],
                       ),
                     ),
-                    AppStyle.vGap12,
-                    buildBGItem(
-                      child: ListTile(
-                        title: const Text("阅读主题"),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: AppColor.novelThemes.keys
-                              .map(
-                                (e) => GestureDetector(
-                                  onTap: () {
-                                    settings.setNovelReaderTheme(e);
-                                  },
-                                  child: Container(
-                                    margin: AppStyle.edgeInsetsL8,
-                                    height: 36,
-                                    width: 36,
-                                    decoration: BoxDecoration(
-                                      color: AppColor.novelThemes[e]!.first,
-                                      borderRadius: AppStyle.radius24,
+                  ),
+                  AppStyle.vGap12,
+                  buildBGItem(
+                    context,
+                    child: ListTile(
+                      title: const Text("阅读主题"),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: AppColor.novelThemes.keys
+                            .map(
+                              (e) => GestureDetector(
+                                onTap: () {
+                                  settings.setNovelReaderTheme(e);
+                                },
+                                child: Container(
+                                  margin: AppStyle.edgeInsetsL8,
+                                  height: 36,
+                                  width: 36,
+                                  decoration: BoxDecoration(
+                                    color: AppColor.novelThemes[e]!.first,
+                                    borderRadius: AppStyle.radius24,
+                                    border: Border.all(
+                                      color: Colors.grey.withOpacity(.2),
                                     ),
-                                    child: Visibility(
-                                      visible: AppColor.novelThemes.keys
-                                              .toList()
-                                              .indexOf(e) ==
-                                          settings.novelReaderTheme.value,
-                                      child: Icon(
-                                        Icons.check,
-                                        color: AppColor.novelThemes[e]!.last,
-                                      ),
+                                  ),
+                                  child: Visibility(
+                                    visible: AppColor.novelThemes.keys
+                                            .toList()
+                                            .indexOf(e) ==
+                                        settings.novelReaderTheme.value,
+                                    child: Icon(
+                                      Icons.check,
+                                      color: AppColor.novelThemes[e]!.last,
                                     ),
                                   ),
                                 ),
-                              )
-                              .toList(),
-                        ),
-                      ),
-                    ),
-                    AppStyle.vGap12,
-                    buildBGItem(
-                      child: SwitchListTile(
-                        value: settings.novelReaderLeftHandMode.value,
-                        onChanged: (e) {
-                          settings.setNovelReaderLeftHandMode(e);
-                        },
-                        title: const Text("操作反转"),
-                        subtitle: const Text("点击左侧下一页，右侧上一页"),
-                      ),
-                    ),
-                    AppStyle.vGap12,
-                    buildBGItem(
-                      child: SwitchListTile(
-                        value: settings.novelReaderShowStatus.value,
-                        onChanged: (e) {
-                          settings.setNovelReaderShowStatus(e);
-                        },
-                        title: const Text("显示状态信息"),
-                      ),
-                    ),
-                    AppStyle.vGap12,
-                    buildBGItem(
-                      child: SwitchListTile(
-                        value: settings.novelReaderPageAnimation.value,
-                        onChanged: (e) {
-                          settings.setNovelReaderPageAnimation(e);
-                        },
-                        title: const Text("翻页动画"),
-                      ),
-                    ),
-                    AppStyle.vGap12,
-                    buildBGItem(
-                      child: ListTile(
-                        title: const Text("字体大小"),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            OutlinedButton(
-                              onPressed: () {
-                                settings.setNovelReaderFontSize(
-                                  settings.novelReaderFontSize.value + 1,
-                                );
-                              },
-                              child: const Icon(
-                                Icons.add,
-                                color: Colors.grey,
                               ),
-                            ),
-                            AppStyle.hGap12,
-                            Text("${settings.novelReaderFontSize.value}"),
-                            AppStyle.hGap12,
-                            OutlinedButton(
-                              onPressed: () {
-                                settings.setNovelReaderFontSize(
-                                  settings.novelReaderFontSize.value - 1,
-                                );
-                              },
-                              child: const Icon(
-                                Icons.remove,
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ],
-                        ),
+                            )
+                            .toList(),
                       ),
                     ),
-                    AppStyle.vGap12,
-                    buildBGItem(
-                      child: ListTile(
-                        title: const Text("行距"),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            OutlinedButton(
-                              onPressed: () {
-                                settings.setNovelReaderLineSpacing(
-                                  settings.novelReaderLineSpacing.value + 0.1,
-                                );
-                              },
-                              child: const Icon(
-                                Icons.add,
-                                color: Colors.grey,
-                              ),
+                  ),
+                  AppStyle.vGap12,
+                  buildBGItem(
+                    context,
+                    child: SwitchListTile(
+                      value: settings.novelReaderLeftHandMode.value,
+                      onChanged: (e) {
+                        settings.setNovelReaderLeftHandMode(e);
+                      },
+                      title: const Text("操作反转"),
+                      subtitle: const Text("点击左侧下一页，右侧上一页"),
+                    ),
+                  ),
+                  AppStyle.vGap12,
+                  buildBGItem(
+                    context,
+                    child: SwitchListTile(
+                      value: settings.novelReaderShowStatus.value,
+                      onChanged: (e) {
+                        settings.setNovelReaderShowStatus(e);
+                      },
+                      title: const Text("显示状态信息"),
+                    ),
+                  ),
+                  AppStyle.vGap12,
+                  buildBGItem(
+                    context,
+                    child: SwitchListTile(
+                      value: settings.novelReaderPageAnimation.value,
+                      onChanged: (e) {
+                        settings.setNovelReaderPageAnimation(e);
+                      },
+                      title: const Text("翻页动画"),
+                    ),
+                  ),
+                  AppStyle.vGap12,
+                  buildBGItem(
+                    context,
+                    child: ListTile(
+                      title: const Text("字体大小"),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          OutlinedButton(
+                            onPressed: () {
+                              settings.setNovelReaderFontSize(
+                                settings.novelReaderFontSize.value + 1,
+                              );
+                            },
+                            child: const Icon(
+                              Icons.add,
+                              // color: Colors.grey,
                             ),
-                            AppStyle.hGap12,
-                            Text((settings.novelReaderLineSpacing.value)
-                                .toStringAsFixed(1)),
-                            AppStyle.hGap12,
-                            OutlinedButton(
-                              onPressed: () {
-                                settings.setNovelReaderLineSpacing(
-                                  settings.novelReaderLineSpacing.value - 0.1,
-                                );
-                              },
-                              child: const Icon(
-                                Icons.remove,
-                                color: Colors.grey,
-                              ),
+                          ),
+                          AppStyle.hGap12,
+                          Text("${settings.novelReaderFontSize.value}"),
+                          AppStyle.hGap12,
+                          OutlinedButton(
+                            onPressed: () {
+                              settings.setNovelReaderFontSize(
+                                settings.novelReaderFontSize.value - 1,
+                              );
+                            },
+                            child: const Icon(
+                              Icons.remove,
+                              // color: Colors.grey,
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  AppStyle.vGap12,
+                  buildBGItem(
+                    context,
+                    child: ListTile(
+                      title: const Text("行距"),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          OutlinedButton(
+                            onPressed: () {
+                              settings.setNovelReaderLineSpacing(
+                                settings.novelReaderLineSpacing.value + 0.1,
+                              );
+                            },
+                            child: const Icon(
+                              Icons.add,
+                              // color: Colors.grey,
+                            ),
+                          ),
+                          AppStyle.hGap12,
+                          Text((settings.novelReaderLineSpacing.value)
+                              .toStringAsFixed(1)),
+                          AppStyle.hGap12,
+                          OutlinedButton(
+                            onPressed: () {
+                              settings.setNovelReaderLineSpacing(
+                                settings.novelReaderLineSpacing.value - 0.1,
+                              );
+                            },
+                            child: const Icon(
+                              Icons.remove,
+                              // color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -629,11 +635,11 @@ class NovelReaderController extends BaseController {
     direction.value = value;
   }
 
-  Widget buildBGItem({required Widget child}) {
+  Widget buildBGItem(BuildContext context, {required Widget child}) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: AppStyle.radius8,
-        color: AppStyle.darkTheme.cardColor,
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
       ),
       child: child,
     );
@@ -641,16 +647,20 @@ class NovelReaderController extends BaseController {
 
   Widget buildSelectedButton(
       {required Widget child, bool selected = false, Function()? onTap}) {
-    return OutlinedButton(
-      style: OutlinedButton.styleFrom(
-        foregroundColor: selected ? Colors.blue : Colors.grey,
-        side: BorderSide(
-          color: selected ? Colors.blue : Colors.grey,
+    return Builder(builder: (context) {
+      return OutlinedButton(
+        style: OutlinedButton.styleFrom(
+          foregroundColor:
+              selected ? Theme.of(context).colorScheme.primary : Colors.grey,
+          side: BorderSide(
+            color:
+                selected ? Theme.of(context).colorScheme.primary : Colors.grey,
+          ),
         ),
-      ),
-      onPressed: onTap,
-      child: child,
-    );
+        onPressed: onTap,
+        child: child,
+      );
+    });
   }
 
   /// 显示目录
@@ -660,57 +670,57 @@ class NovelReaderController extends BaseController {
       context: Get.context!,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(12),
-          topRight: Radius.circular(12),
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
         ),
       ),
       constraints: const BoxConstraints(
         maxWidth: 500,
       ),
-      backgroundColor: AppStyle.darkTheme.scaffoldBackgroundColor,
-      builder: (context) => Theme(
-        data: AppStyle.darkTheme,
-        child: Column(
-          children: [
-            ListTile(
-              title: Text("目录(${chapters.length})"),
-              trailing: IconButton(
-                onPressed: Get.back,
-                icon: const Icon(Icons.close),
+      builder: (context) => Column(
+        children: [
+          ListTile(
+            title: Text("目录(${chapters.length})"),
+            trailing: IconButton(
+              onPressed: Get.back,
+              icon: const Icon(Icons.close),
+            ),
+            contentPadding: AppStyle.edgeInsetsL12,
+          ),
+          Divider(
+            height: 1.0,
+            color: Theme.of(context).dividerColor.withOpacity(.2),
+          ),
+          Expanded(
+            child: ScrollablePositionedList.separated(
+              initialScrollIndex: chapterIndex.value,
+              itemCount: chapters.length,
+              separatorBuilder: (_, i) => Divider(
+                indent: 12,
+                endIndent: 12,
+                height: 1.0,
+                color: Theme.of(context).dividerColor.withOpacity(.2),
               ),
-              contentPadding: AppStyle.edgeInsetsL12,
+              itemBuilder: (_, i) {
+                var item = chapters[i];
+                return ListTile(
+                  selected: i == chapterIndex.value,
+                  selectedTileColor:
+                      Theme.of(context).colorScheme.secondaryContainer,
+                  selectedColor:
+                      Theme.of(context).colorScheme.onSecondaryContainer,
+                  title: Text(item.chapterName),
+                  subtitle: Text(item.volumeName),
+                  onTap: () {
+                    chapterIndex.value = i;
+                    loadContent();
+                    Get.back();
+                  },
+                );
+              },
             ),
-            Divider(
-              height: 1.0,
-              color: Colors.grey.withOpacity(.2),
-            ),
-            Expanded(
-              child: ScrollablePositionedList.separated(
-                initialScrollIndex: chapterIndex.value,
-                itemCount: chapters.length,
-                separatorBuilder: (_, i) => Divider(
-                  indent: 12,
-                  endIndent: 12,
-                  height: 1.0,
-                  color: Colors.grey.withOpacity(.2),
-                ),
-                itemBuilder: (_, i) {
-                  var item = chapters[i];
-                  return ListTile(
-                    selected: i == chapterIndex.value,
-                    title: Text(item.chapterName),
-                    subtitle: Text(item.volumeName),
-                    onTap: () {
-                      chapterIndex.value = i;
-                      loadContent();
-                      Get.back();
-                    },
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
       routeSettings: const RouteSettings(name: "/modalBottomSheet"),
     );

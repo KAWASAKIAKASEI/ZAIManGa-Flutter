@@ -1,17 +1,14 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
-import 'package:dio/io.dart';
-import 'dart:io' as io;
 import 'package:flutter_dmzj/app/app_error.dart';
 import 'package:flutter_dmzj/requests/common/api.dart';
 import 'package:flutter_dmzj/requests/common/custom_interceptor.dart';
-import 'package:flutter_dmzj/services/app_settings_service.dart';
-import 'package:get/get.dart';
+import 'package:flutter_dmzj/services/user_service.dart';
 
 class HttpClient {
   static HttpClient? _httpUtil;
-  AppSettingsService settings = AppSettingsService.instance;
 
   static HttpClient get instance {
     _httpUtil ??= HttpClient();
@@ -28,18 +25,6 @@ class HttpClient {
       ),
     );
     dio.interceptors.add(CustomInterceptor());
-    // 检查代理设置,为空就不使用代理
-    if (settings.proxyAddress.isNotEmpty) {
-      dio.httpClientAdapter = IOHttpClientAdapter(
-        createHttpClient: () {
-          final client = io.HttpClient();
-          client.findProxy = (uri) {
-            return 'PROXY ${settings.proxyAddress}';
-          };
-          return client;
-        },
-      );
-    }
   }
 
   /// Get请求
@@ -52,7 +37,7 @@ class HttpClient {
   Future<dynamic> get(
     String path, {
     Map<String, dynamic>? queryParameters,
-    String baseUrl = Api.BASE_URL_V3,
+    String baseUrl = Api.BASE_URL,
     CancelToken? cancel,
     bool withDefaultParameter = true,
     bool needLogin = false,
@@ -64,6 +49,11 @@ class HttpClient {
     var query = Api.getDefaultParameter(withUid: needLogin);
     if (withDefaultParameter) {
       queryParameters.addAll(query);
+    }
+    if (needLogin) {
+      if (UserService.instance.logined.value) {
+        header['Authorization'] = 'Bearer ${UserService.instance.dmzjToken}';
+      }
     }
 
     try {
@@ -78,12 +68,12 @@ class HttpClient {
       );
       if (checkCode && result.data is Map) {
         var data = result.data as Map;
-        if (data['code'] == 0) {
+        if (data['errno'] == 0) {
           return result.data['data'];
         } else {
           throw AppError(
-            result.data['msg'].toString(),
-            code: int.tryParse(result.data['code'].toString()) ?? 0,
+            result.data['errmsg'].toString(),
+            code: int.tryParse(result.data['errno'].toString()) ?? 0,
           );
         }
       }
@@ -108,13 +98,13 @@ class HttpClient {
   Future<dynamic> getJson(
     String path, {
     Map<String, dynamic>? queryParameters,
-    String baseUrl = Api.BASE_URL_V3,
+    String baseUrl = Api.BASE_URL,
     CancelToken? cancel,
     bool withDefaultParameter = true,
     bool needLogin = false,
     bool checkCode = false,
   }) async {
-    return await get(
+    var result = await get(
       path,
       queryParameters: queryParameters,
       baseUrl: baseUrl,
@@ -124,6 +114,12 @@ class HttpClient {
       responseType: ResponseType.json,
       checkCode: checkCode,
     );
+    if (result is Map || result is List) {
+      return result;
+    } else if (result is String) {
+      return jsonDecode(result);
+    }
+    return result;
   }
 
   /// Get 请求,返回Text
@@ -135,7 +131,7 @@ class HttpClient {
   Future<dynamic> getText(
     String path, {
     Map<String, dynamic>? queryParameters,
-    String baseUrl = Api.BASE_URL_V3,
+    String baseUrl = Api.BASE_URL,
     CancelToken? cancel,
     bool withDefaultParameter = true,
     bool needLogin = false,
@@ -160,7 +156,7 @@ class HttpClient {
   Future<Uint8List> getEncryptV4(
     String path, {
     Map<String, dynamic>? queryParameters,
-    String baseUrl = Api.BASE_URL_V4,
+    String baseUrl = Api.BASE_URL,
     CancelToken? cancel,
     bool withDefaultParameter = true,
     bool needLogin = false,
@@ -187,7 +183,7 @@ class HttpClient {
   Future<dynamic> getBytes(
     String path, {
     Map<String, dynamic>? queryParameters,
-    String baseUrl = Api.BASE_URL_V3,
+    String baseUrl = Api.BASE_URL,
     CancelToken? cancel,
     bool withDefaultParameter = true,
     bool needLogin = false,
@@ -212,13 +208,19 @@ class HttpClient {
     String path, {
     Map<String, dynamic>? queryParameters,
     Map<String, dynamic>? data,
-    String baseUrl = Api.BASE_URL_V3,
+    String baseUrl = Api.BASE_URL,
     CancelToken? cancel,
     bool formUrlEncoded = false,
     bool checkCode = false,
+    bool needLogin = false,
   }) async {
     Map<String, dynamic> header = {};
     queryParameters ??= {};
+    if (needLogin) {
+      if (UserService.instance.logined.value) {
+        header['Authorization'] = 'Bearer ${UserService.instance.dmzjToken}';
+      }
+    }
     try {
       var result = await dio.post(
         baseUrl + path,
@@ -232,14 +234,18 @@ class HttpClient {
         ),
         cancelToken: cancel,
       );
-      if (checkCode && result.data is Map) {
+      var jsonMap = result.data;
+      if (jsonMap is String) {
+        jsonMap = jsonDecode(jsonMap);
+      }
+      if (checkCode) {
         var data = result.data as Map;
-        if (data['code'] == 0) {
+        if (data['errno'] == 0) {
           return result.data['data'];
         } else {
           throw AppError(
-            result.data['msg'].toString(),
-            code: int.tryParse(result.data['code'].toString()) ?? 0,
+            result.data['errmsg'].toString(),
+            code: int.tryParse(result.data['errno'].toString()) ?? 0,
           );
         }
       }

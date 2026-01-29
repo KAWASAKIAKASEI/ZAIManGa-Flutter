@@ -19,7 +19,6 @@ class UserHomePage extends GetView<UserHomeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Get.isDarkMode ? Colors.black : AppColor.backgroundColor,
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: Get.isDarkMode
             ? SystemUiOverlayStyle.light.copyWith(
@@ -97,9 +96,9 @@ class UserHomePage extends GetView<UserHomeController> {
                       subtitle: const Text(
                         "点击前往登录",
                       ),
-                      trailing: const Icon(
+                      trailing: Icon(
                         Icons.chevron_right,
-                        color: Colors.grey,
+                        color: Theme.of(context).iconTheme.color?.withOpacity(0.5),
                       ),
                       onTap: controller.login,
                     ),
@@ -114,37 +113,37 @@ class UserHomePage extends GetView<UserHomeController> {
                         child: ListTile(
                           leading: const Icon(Remix.heart_line),
                           title: const Text("我的订阅"),
-                          trailing: const Icon(
+                          trailing: Icon(
                             Icons.chevron_right,
-                            color: Colors.grey,
+                            color: Theme.of(context).iconTheme.color?.withOpacity(0.5),
                           ),
                           onTap: controller.toUserSubscribe,
                         ),
                       ),
-                      Visibility(
-                        visible: UserService.instance.logined.value,
-                        child: ListTile(
-                          leading: const Icon(Remix.history_line),
-                          title: const Text("浏览记录"),
-                          trailing: const Icon(
-                            Icons.chevron_right,
-                            color: Colors.grey,
-                          ),
-                          onTap: controller.toUserHistory,
-                        ),
-                      ),
-                      Visibility(
-                        visible: UserService.instance.logined.value,
-                        child: ListTile(
-                          leading: const Icon(Remix.chat_smile_2_line),
-                          title: const Text("我的评论"),
-                          trailing: const Icon(
-                            Icons.chevron_right,
-                            color: Colors.grey,
-                          ),
-                          onTap: controller.userComment,
-                        ),
-                      ),
+                      // Visibility(
+                      //   visible: UserService.instance.logined.value,
+                      //   child: ListTile(
+                      //     leading: const Icon(Remix.history_line),
+                      //     title: const Text("浏览记录"),
+                      //     trailing: const Icon(
+                      //       Icons.chevron_right,
+                      //       color: Colors.grey,
+                      //     ),
+                      //     onTap: controller.toUserHistory,
+                      //   ),
+                      // ),
+                      // Visibility(
+                      //   visible: UserService.instance.logined.value,
+                      //   child: ListTile(
+                      //     leading: const Icon(Remix.chat_smile_2_line),
+                      //     title: const Text("我的评论"),
+                      //     trailing: const Icon(
+                      //       Icons.chevron_right,
+                      //       color: Colors.grey,
+                      //     ),
+                      //     onTap: controller.userComment,
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
@@ -154,18 +153,18 @@ class UserHomePage extends GetView<UserHomeController> {
                     ListTile(
                       leading: const Icon(Remix.file_history_line),
                       title: const Text("本机记录"),
-                      trailing: const Icon(
+                      trailing: Icon(
                         Icons.chevron_right,
-                        color: Colors.grey,
+                        color: Theme.of(context).iconTheme.color?.withOpacity(0.5),
                       ),
                       onTap: controller.toLocalHistory,
                     ),
                     ListTile(
                       leading: const Icon(Remix.star_line),
                       title: const Text("本机收藏"),
-                      trailing: const Icon(
+                      trailing: Icon(
                         Icons.chevron_right,
-                        color: Colors.grey,
+                        color: Theme.of(context).iconTheme.color?.withOpacity(0.5),
                       ),
                       onTap: controller.toFavorite,
                     ),
@@ -198,9 +197,9 @@ class UserHomePage extends GetView<UserHomeController> {
                               ),
                             ),
                           ),
-                          const Icon(
+                          Icon(
                             Icons.chevron_right,
-                            color: Colors.grey,
+                            color: Theme.of(context).iconTheme.color?.withOpacity(0.5),
                           ),
                         ],
                       ),
@@ -235,9 +234,9 @@ class UserHomePage extends GetView<UserHomeController> {
                               ),
                             ),
                           ),
-                          const Icon(
+                          Icon(
                             Icons.chevron_right,
-                            color: Colors.grey,
+                            color: Theme.of(context).iconTheme.color?.withOpacity(0.5),
                           ),
                         ],
                       ),
@@ -252,18 +251,18 @@ class UserHomePage extends GetView<UserHomeController> {
                       leading: Icon(
                           Get.isDarkMode ? Remix.moon_line : Remix.sun_line),
                       title: const Text("显示主题"),
-                      trailing: const Icon(
+                      trailing: Icon(
                         Icons.chevron_right,
-                        color: Colors.grey,
+                        color: Theme.of(context).iconTheme.color?.withOpacity(0.5),
                       ),
                       onTap: controller.setTheme,
                     ),
                     ListTile(
                       leading: const Icon(Remix.settings_line),
                       title: const Text("更多设置"),
-                      trailing: const Icon(
+                      trailing: Icon(
                         Icons.chevron_right,
-                        color: Colors.grey,
+                        color: Theme.of(context).iconTheme.color?.withOpacity(0.5),
                       ),
                       onTap: controller.toSettings,
                     ),
@@ -272,44 +271,44 @@ class UserHomePage extends GetView<UserHomeController> {
                 _buildCard(
                   context,
                   children: [
-                    const ListTile(
-                      leading: Icon(Remix.error_warning_line),
-                      title: Text("免责声明"),
+                    ListTile(
+                      leading: const Icon(Remix.error_warning_line),
+                      title: const Text("免责声明"),
                       trailing: Icon(
                         Icons.chevron_right,
-                        color: Colors.grey,
+                        color: Theme.of(context).iconTheme.color?.withOpacity(0.5),
                       ),
                       onTap: DialogUtils.showStatement,
                     ),
-                    ListTile(
-                      leading: const Icon(Remix.github_fill),
-                      title: const Text("开源主页"),
-                      trailing: const Icon(
-                        Icons.chevron_right,
-                        color: Colors.grey,
-                      ),
-                      onTap: () {
-                        launchUrlString(
-                          "https://github.com/xiaoyaocz/flutter_dmzj",
-                          mode: LaunchMode.externalApplication,
-                        );
-                      },
-                    ),
-                    ListTile(
-                      leading: const Icon(Remix.upload_2_line),
-                      title: const Text("检查更新"),
-                      trailing: const Icon(
-                        Icons.chevron_right,
-                        color: Colors.grey,
-                      ),
-                      onTap: controller.checkUpdate,
-                    ),
+                    // ListTile(
+                    //   leading: const Icon(Remix.github_fill),
+                    //   title: const Text("开源主页"),
+                    //   trailing: const Icon(
+                    //     Icons.chevron_right,
+                    //     color: Colors.grey,
+                    //   ),
+                    //   onTap: () {
+                    //     launchUrlString(
+                    //       "https://github.com/xiaoyaocz/flutter_dmzj",
+                    //       mode: LaunchMode.externalApplication,
+                    //     );
+                    //   },
+                    // ),
+                    // ListTile(
+                    //   leading: const Icon(Remix.upload_2_line),
+                    //   title: const Text("检查更新"),
+                    //   trailing: const Icon(
+                    //     Icons.chevron_right,
+                    //     color: Colors.grey,
+                    //   ),
+                    //   onTap: controller.checkUpdate,
+                    // ),
                     ListTile(
                       leading: const Icon(Remix.information_line),
                       title: const Text("关于APP"),
-                      trailing: const Icon(
+                      trailing: Icon(
                         Icons.chevron_right,
-                        color: Colors.grey,
+                        color: Theme.of(context).iconTheme.color?.withOpacity(0.5),
                       ),
                       onTap: controller.about,
                     ),

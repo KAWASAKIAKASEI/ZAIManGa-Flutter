@@ -57,9 +57,9 @@ class UserHomeController extends GetxController {
           ),
         ),
       ),
-      applicationName: "动漫之家X",
+      applicationName: "再漫画Flutter",
       applicationVersion: "Ver ${Utils.packageInfo.version}",
-      applicationLegalese: "@xiaoyaocz",
+      applicationLegalese: "由akasei二次修改并分发",
     ));
   }
 
